@@ -156,17 +156,20 @@ class postfix::server (
   $root_group             = $::postfix::params::root_group,
   $mailq_path             = $::postfix::params::mailq_path,
   $newaliases_path        = $::postfix::params::newaliases_path,
-  $sendmail_path          = $::postfix::params::sendmail_path
+  $sendmail_path          = $::postfix::params::sendmail_path,
   $mastercf               = undef,
 ) inherits ::postfix::params {
 
-#  notify { "Hale kamo $mysql nebo $postfix_mysql_package": }
+  include '::postfix'
 
   class { '::postfix::install':
     mysql                  => $mysql,
     postfix_package        => $postfix_package,
     postfix_mysql_package  => $postfix_mysql_package,
     postfix_package_ensure => $postfix_package_ensure,
+  }
+
+  class { '::postfix::service':
     service_restart        => $service_restart,
   }
 
@@ -287,7 +290,7 @@ class postfix::server (
     mailq_path                           => $mailq_path,
     newaliases_path                      => $newaliases_path,
     sendmail_path                        => $sendmail_path,
-    masterfs                             => $mastercf,
+    mastercf                             => $mastercf,
   }
 
 }

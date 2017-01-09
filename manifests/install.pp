@@ -8,7 +8,6 @@ class postfix::install (
     $postfix_package        = $::postfix::params::postfix_package,
     $postfix_mysql_package  = $::postfix::params::postfix_mysql_package,
     $postfix_package_ensure = $::postfix::params::postfix_package_ensure,
-    $service_restart        = $::postfix::params::service_restart,
 ){
 
     # Main package and service it provides
@@ -22,14 +21,6 @@ class postfix::install (
     package { $package_name:
         ensure => $postfix_package_ensure,
         alias => 'postfix'
-    }
-
-    service { 'postfix':
-        require   => Package[$package_name],
-        enable    => true,
-        ensure    => running,
-        hasstatus => true,
-        restart   => $service_restart,
     }
 
 }

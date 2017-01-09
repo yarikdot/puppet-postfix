@@ -34,7 +34,7 @@ define postfix::file (
   $ensure     = undef
 ) {
 
-  include '::postfix::params'
+#  include '::postfix::params'
 
   $real_filename = $filename ? {
     undef    => "${postfixdir}/${title}",
@@ -49,7 +49,7 @@ define postfix::file (
     content => $content,
     source  => $source,
     notify  => Service['postfix'],
-    require => Package[$::postfix::params::postfix_package],
+#    require => Package['postfix'],
   }
 
 }

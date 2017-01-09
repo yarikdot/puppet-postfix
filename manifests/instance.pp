@@ -143,13 +143,16 @@ define postfix::instance (
 
     $instance = $title ? {
         'default' => 'postfix',
-        default => "postfix-${title}"
+        'postfix' => 'postfix',
+        default   => "postfix-${title}"
     }
     $postfixdir = "${config_directory}/${instance}"
 
     # Create instance
 
-    postfix::instances::create { $instance: }
+    postfix::instances::create { $instance:
+        require => Package['postfix']
+    }
 
     # Default has el5 files, for el6 a few defaults have changed
 
@@ -166,7 +169,7 @@ define postfix::instance (
 
     # Dynamic maps - symlink to default postfix instance
 
-    if ($title != 'default') {
+    if ($instance != 'postfix') {
         file { "${postfixdir}/dynamicmaps.cf":
             ensure => link,
             target => "${config_directory}/postfix/dynamicmaps.cf",
@@ -224,6 +227,7 @@ define postfix::instance (
         content    => template('postfix/header_checks.erb'),
         group      => $root_group,
         postfixdir => "${postfixdir}",
+        require    => Postfix::Instances::Create[$instance],
     }
 
     # Regex body_checks
@@ -232,6 +236,7 @@ define postfix::instance (
         content    => template('postfix/body_checks.erb'),
         group      => $root_group,
         postfixdir => "${postfixdir}",
+        require    => Postfix::Instances::Create[$instance],
     }
 
 }
